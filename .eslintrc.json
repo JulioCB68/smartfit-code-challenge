@@ -1,42 +1,6 @@
 {
-	"extends": [
-		"next/core-web-vitals",
-		"plugin:prettier/recommended" // Adiciona o plugin eslint-plugin-prettier
-	],
-	"plugins": [
-		"import",
-		"prettier"
-	], // Adiciona "prettier" como um plugin
-	"rules": {
-		"quotes": [
-			"error",
-			"single"
-		],
-		"prettier/prettier": [
-			"error",
-			{
-				"printWidth": 80,
-				"singleQuote": true
-				// "tabWidth": 2,
-				// "trailingComma": "all",
-				// "arrowParens": "always",
-				// "semi": false,
-				// "endOfLine": "auto",
-			}
-		],
-		"import/order": [
-			"error",
-			{
-				"groups": [
-					"builtin",
-					"external",
-					"internal",
-					"parent",
-					"sibling",
-					"index"
-				],
-				"newlines-between": "always"
-			}
-		]
-	}
+  "extends": [
+    "@rocketseat/eslint-config/next", 
+    "next/core-web-vitals"
+  ]
 }
