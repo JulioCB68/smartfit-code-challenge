@@ -11,4 +11,10 @@ export interface GymI {
     weekdays: string
     hour: string
   }[]
+
+  street?: string
+  region?: string
+  city_name?: string
+  state_name?: string
+  uf?: string
 }
