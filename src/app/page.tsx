@@ -1,18 +1,20 @@
 'use client'
 
 import Image from 'next/image'
-import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
-
-import IconHour from '@/assets/images/icon-hour.png'
-import Logo from '@/assets/images/logo.svg'
-import { getGyms } from '@/service/api'
-import { GymI } from '@/service/type'
-import { filterrr } from '@/utils/filter-units'
-import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useQuery } from '@tanstack/react-query'
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
+
+import Gym from '@/components/gym'
+import { getGyms } from '@/service/api'
+import { GymI } from '@/service/type'
+import { filterrr } from '@/utils/filter-units'
+
+import IconHour from '../../public/assets/images/icon-hour.png'
+import Logo from '../../public/assets/images/logo.svg'
 
 interface FormData extends FieldValues {
   checkboxOption: string
@@ -151,6 +153,13 @@ export default function Home() {
             </button>
           </div>
         </form>
+        <div className="w-full">
+          {filteredUnits &&
+            filteredUnits?.map((item) => <Gym key={item.id} data={item} />)}
+
+          {!filteredUnits &&
+            units?.map((item) => <Gym key={item.id} data={item} />)}
+        </div>
       </div>
     </div>
   )
