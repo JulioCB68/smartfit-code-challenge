@@ -1,4 +1,4 @@
-export interface Gym {
+export interface GymI {
   id: number
   title: string
   content: string

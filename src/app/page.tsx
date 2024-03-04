@@ -1,9 +1,57 @@
-import Image from 'next/image';
+'use client'
 
-import IconHour from '@/assets/images/icon-hour.png';
-import Logo from '@/assets/images/logo.svg';
+import Image from 'next/image'
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
+
+import IconHour from '@/assets/images/icon-hour.png'
+import Logo from '@/assets/images/logo.svg'
+import { getGyms } from '@/service/api'
+import { GymI } from '@/service/type'
+import { filterrr } from '@/utils/filter-units'
+import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
+
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+
+interface FormData extends FieldValues {
+  checkboxOption: string
+  radioOption: string
+}
 
 export default function Home() {
+  const [filteredUnits, setFilteredUnits] = useState<GymI[]>()
+
+  const schema = z
+    .object({
+      radioOption: z.string().optional(),
+      checkboxOption: z.boolean().optional(),
+    })
+    .default({ checkboxOption: true })
+
+  const { register, handleSubmit } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  })
+
+  const { data: units } = useQuery<GymI[], Error>({
+    queryKey: ['gyms'],
+    queryFn: getGyms,
+  })
+
+  const onSubmit: SubmitHandler<FormData> = (data) => {
+    const { checkboxOption, radioOption } = data
+
+    if (units) {
+      const filteredResults = filterrr(units, !!checkboxOption, radioOption)
+      return setFilteredUnits(filteredResults)
+    }
+  }
+
+  //   onClean(): void {
+  //     formGroup.reset();
+
+  // }
+
   return (
     <div>
       <div className="flex w-full items-center justify-center bg-black p-4">
@@ -19,7 +67,7 @@ export default function Home() {
           decretos de cada município. Por isso, confira aqui se a sua unidade
           está aberta e as medidas de segurança que estamos seguindo.
         </p>
-        <form action="" className="mt-12">
+        <form className="mt-12" onSubmit={handleSubmit(onSubmit)}>
           <div className="flex items-center pb-8">
             <Image src={IconHour} alt="Logo" width={30} height={30} />
             <p className="pl-2">Horário</p>
@@ -30,10 +78,12 @@ export default function Home() {
           <div className="flex flex-col pt-8">
             <div className="flex items-center justify-between">
               <div className="py-1">
-                <input type="radio" />
-                <label htmlFor="" className="pl-2">
-                  Manhã
-                </label>
+                <input
+                  type="radio"
+                  value="morning"
+                  {...register('radioOption')}
+                />
+                <label className="pl-2">Manhã</label>
               </div>
               <div className="flex">
                 <p>06:00 às 12:00</p>
@@ -42,10 +92,12 @@ export default function Home() {
 
             <div className="flex items-center justify-between">
               <div className="py-1">
-                <input type="radio" />
-                <label htmlFor="" className="pl-2">
-                  Tarde
-                </label>
+                <input
+                  type="radio"
+                  value="afternoon"
+                  {...register('radioOption')}
+                />
+                <label className="pl-2">Tarde</label>
               </div>
               <div className="flex">
                 <p>12:01 às 18:00</p>
@@ -54,10 +106,12 @@ export default function Home() {
 
             <div className="flex items-center justify-between">
               <div className="py-1">
-                <input type="radio" />
-                <label htmlFor="" className="pl-2">
-                  Noite
-                </label>
+                <input
+                  type="radio"
+                  value="night"
+                  {...register('radioOption')}
+                />
+                <label className="pl-2">Noite</label>
               </div>
               <div className="flex">
                 <p>18:01 às 23:00</p>
@@ -67,14 +121,17 @@ export default function Home() {
 
           <div className="flex flex-col justify-between pt-8 md:flex-row">
             <div>
-              <input type="checkbox" />
-              <label htmlFor="" className="pl-2">
-                Exibir unidades fechadas
-              </label>
+              <input
+                type="checkbox"
+                {...register('checkboxOption')}
+                defaultChecked={true}
+              />
+              <label className="pl-2">Exibir unidades fechadas</label>
             </div>
             <div>
               <p className="pt-4 md:pt-0">
-                Resultados encontrados: <strong>0</strong>
+                Resultados encontrados:{' '}
+                <strong>{filteredUnits?.length ?? units?.length}</strong>
               </p>
             </div>
           </div>
@@ -96,5 +153,5 @@ export default function Home() {
         </form>
       </div>
     </div>
-  );
+  )
 }
