@@ -58,10 +58,14 @@ function filterUnits(unit: GymI, openHour: string, closeHour: string) {
   return false
 }
 
-export function filterrr(results: GymI[], showClosed: boolean, hour: string) {
+export function formFilterUnits(
+  results: GymI[],
+  showClosed: boolean,
+  hour: string,
+) {
   let intermediateResults = results
 
-  if (showClosed) {
+  if (!showClosed) {
     intermediateResults = results.filter((location) => location.opened === true)
   }
 
